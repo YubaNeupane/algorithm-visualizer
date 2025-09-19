@@ -2,6 +2,25 @@
   "name": "algorithm-visualizer",
   "version": "0.1.0",
   "private": true,
+  "description": "Interactive algorithm visualization tool for learning and understanding various algorithms",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YubaNeupane/algorithm-visualizer.git"
+  },
+  "homepage": "https://github.com/YubaNeupane/algorithm-visualizer#readme",
+  "bugs": {
+    "url": "https://github.com/YubaNeupane/algorithm-visualizer/issues"
+  },
+  "author": "YubaNeupane",
+  "keywords": [
+    "algorithm",
+    "visualization",
+    "sorting",
+    "data-structures",
+    "nextjs",
+    "react",
+    "typescript"
+  ],
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",

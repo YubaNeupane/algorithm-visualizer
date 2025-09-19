@@ -45,9 +45,9 @@ export const metadata: Metadata = {
   ],
 
   // Authors and creator info
-  authors: [{ name: "Algorithm Visualizer Team" }],
-  creator: "Algorithm Visualizer",
-  publisher: "Algorithm Visualizer",
+  authors: [{ name: "YubaNeupane" }],
+  creator: "YubaNeupane",
+  publisher: "YubaNeupane",
 
   // Open Graph meta tags
   openGraph: {
@@ -125,7 +125,7 @@ export default function RootLayout({
     },
     sameAs: [
       "https://twitter.com/AlgorithmViz",
-      "https://github.com/algorithm-visualizer",
+      "https://github.com/YubaNeupane/algorithm-visualizer",
     ],
     contactPoint: {
       "@type": "ContactPoint",
@@ -174,8 +174,8 @@ export default function RootLayout({
       availability: "https://schema.org/InStock",
     },
     creator: {
-      "@type": "Organization",
-      name: "Algorithm Visualizer Team",
+      "@type": "Person",
+      name: "YubaNeupane",
     },
     featureList: [
       "Sorting Algorithm Visualization",
