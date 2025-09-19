@@ -17,7 +17,16 @@ import {
   treeDefaultDatasets,
 } from "@/algorithms/trees";
 import { SortingStep, TreeStep, TreeNode } from "@/types/algorithm";
-import { ChevronDown, Shuffle, ArrowLeft } from "lucide-react";
+import {
+  ChevronDown,
+  Shuffle,
+  ArrowLeft,
+  RotateCcw,
+  SkipBack,
+  Pause,
+  Play,
+  SkipForward,
+} from "lucide-react";
 import clsx from "clsx";
 import Link from "next/link";
 
@@ -241,54 +250,56 @@ export default function VisualizerPage() {
       <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
         <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4">
               <Link
                 href="/"
                 className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
               >
-                <ArrowLeft className="w-5 h-5" />
-                <span>Back to Home</span>
+                <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span className="hidden sm:inline">Back to Home</span>
+                <span className="sm:hidden">Home</span>
               </Link>
-              <div className="h-6 w-px bg-gray-300 dark:bg-gray-600" />
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                Algorithm Visualizer
+              <div className="hidden sm:block h-6 w-px bg-gray-300 dark:bg-gray-600" />
+              <h1 className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white">
+                <span className="hidden sm:inline">Algorithm Visualizer</span>
+                <span className="sm:hidden">AlgoViz</span>
               </h1>
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4">
               {/* Visualization Type Toggle */}
               <div className="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
                 <button
                   onClick={() => setVisualizationType("sorting")}
                   className={clsx(
-                    "px-3 py-1 rounded-md text-sm font-medium transition-colors",
+                    "px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm font-medium transition-colors",
                     visualizationType === "sorting"
                       ? "bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm"
                       : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                   )}
                 >
-                  Sorting
+                  Sort
                 </button>
                 <button
                   onClick={() => setVisualizationType("tree")}
                   className={clsx(
-                    "px-3 py-1 rounded-md text-sm font-medium transition-colors",
+                    "px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm font-medium transition-colors",
                     visualizationType === "tree"
                       ? "bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm"
                       : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                   )}
                 >
-                  Trees
+                  Tree
                 </button>
               </div>
 
               {/* Tree Builder Link */}
               <Link
                 href="/tree-builder"
-                className="px-3 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+                className="px-2 sm:px-3 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg text-xs sm:text-sm font-medium transition-colors flex items-center gap-1 sm:gap-2"
               >
                 <svg
-                  className="w-4 h-4"
+                  className="w-3 h-3 sm:w-4 sm:h-4"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -300,7 +311,8 @@ export default function VisualizerPage() {
                     d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                   />
                 </svg>
-                Tree Builder
+                <span className="hidden sm:inline">Tree Builder</span>
+                <span className="sm:hidden">Build</span>
               </Link>
 
               {/* Theme Toggle */}
@@ -312,31 +324,160 @@ export default function VisualizerPage() {
 
       <div className="max-w-full mx-auto px-2 sm:px-4 lg:px-6 py-2 lg:py-4">
         <div className="flex flex-col lg:grid lg:grid-cols-6 gap-2 lg:gap-4">
-          {/* Mobile Controls - Floating Bottom Panel */}
-          <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-4 z-50">
-            <Controls
-              isPlaying={playback.isPlaying}
-              canStepForward={playback.canStepForward}
-              canStepBackward={playback.canStepBackward}
-              speed={playback.speed}
-              progress={playback.progress}
-              currentStep={playback.currentStep}
-              totalSteps={currentSteps.length}
-              onPlay={playback.play}
-              onPause={playback.pause}
-              onStepForward={playback.stepForward}
-              onStepBackward={playback.stepBackward}
-              onReset={playback.reset}
-              onSpeedChange={playback.setSpeed}
-              onProgressChange={playback.jumpToStep}
-            />
+          {/* Mobile-First Layout: Visualization comes first */}
+          <div className="lg:hidden order-1 mb-4">
+            {/* Mobile Visualization Canvas */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-2">
+              {visualizationType === "sorting" ? (
+                <ArrayBars
+                  data={currentArrayState}
+                  currentStep={currentStep as SortingStep}
+                  showIndices={showIndices}
+                  showValues={showValues}
+                  className="h-80 w-full"
+                />
+              ) : (
+                <TreeCanvas
+                  tree={treeData}
+                  currentStep={currentStep as TreeStep}
+                  className="h-80 w-full"
+                />
+              )}
+            </div>
+
+            {/* Mobile Controls - Compact */}
+            <div className="mt-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-3">
+              <div className="flex items-center justify-center gap-2 mb-3">
+                {/* Reset */}
+                <button
+                  onClick={playback.reset}
+                  className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                  title="Reset"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                </button>
+
+                {/* Step Backward */}
+                <button
+                  onClick={playback.stepBackward}
+                  disabled={!playback.canStepBackward}
+                  className={clsx(
+                    "p-2 rounded-lg transition-colors",
+                    playback.canStepBackward
+                      ? "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
+                      : "bg-gray-50 dark:bg-gray-800 text-gray-400 cursor-not-allowed"
+                  )}
+                  title="Step back"
+                >
+                  <SkipBack className="w-4 h-4" />
+                </button>
+
+                {/* Play/Pause */}
+                <button
+                  onClick={playback.isPlaying ? playback.pause : playback.play}
+                  disabled={!playback.canStepForward && !playback.isPlaying}
+                  className={clsx(
+                    "p-3 rounded-lg transition-colors",
+                    playback.canStepForward || playback.isPlaying
+                      ? "bg-blue-500 hover:bg-blue-600 text-white"
+                      : "bg-gray-50 dark:bg-gray-800 text-gray-400 cursor-not-allowed"
+                  )}
+                  title={playback.isPlaying ? "Pause" : "Play"}
+                >
+                  {playback.isPlaying ? (
+                    <Pause className="w-5 h-5" />
+                  ) : (
+                    <Play className="w-5 h-5" />
+                  )}
+                </button>
+
+                {/* Step Forward */}
+                <button
+                  onClick={playback.stepForward}
+                  disabled={!playback.canStepForward}
+                  className={clsx(
+                    "p-2 rounded-lg transition-colors",
+                    playback.canStepForward
+                      ? "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
+                      : "bg-gray-50 dark:bg-gray-800 text-gray-400 cursor-not-allowed"
+                  )}
+                  title="Step forward"
+                >
+                  <SkipForward className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Progress Bar */}
+              <div className="mb-3">
+                <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 mb-2">
+                  <span>
+                    Step {playback.currentStep + 1} of {currentSteps.length}
+                  </span>
+                  <span>{Math.round(playback.progress)}%</span>
+                </div>
+                <div className="relative">
+                  <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full">
+                    <div
+                      className="h-2 bg-blue-500 rounded-full transition-all duration-200"
+                      style={{ width: `${playback.progress}%` }}
+                    />
+                  </div>
+                  <input
+                    type="range"
+                    min="0"
+                    max={currentSteps.length - 1}
+                    value={playback.currentStep}
+                    onChange={(e) =>
+                      playback.jumpToStep(parseInt(e.target.value))
+                    }
+                    className="absolute inset-0 w-full h-2 opacity-0 cursor-pointer"
+                    title="Scrub through steps"
+                  />
+                </div>
+              </div>
+
+              {/* Speed Control */}
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-700 dark:text-gray-300">
+                  Speed:
+                </span>
+                <div className="flex items-center gap-1">
+                  {[0.5, 1, 2, 3].map((speedOption) => (
+                    <button
+                      key={speedOption}
+                      onClick={() => playback.setSpeed(speedOption)}
+                      className={clsx(
+                        "px-2 py-1 text-xs rounded transition-colors",
+                        playback.speed === speedOption
+                          ? "bg-blue-500 text-white"
+                          : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                      )}
+                    >
+                      {speedOption}x
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Step Description - Mobile */}
+            {currentStep && (
+              <div className="mt-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-3">
+                <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-2">
+                  Current Step
+                </h3>
+                <p className="text-sm text-gray-700 dark:text-gray-300">
+                  {currentStep.description}
+                </p>
+              </div>
+            )}
           </div>
 
-          {/* Desktop Left Panel - Controls and Settings */}
-          <div className="lg:col-span-1 space-y-4 lg:space-y-6 mb-20 lg:mb-0">
+          {/* Controls and Settings Panel - Desktop and Mobile Settings */}
+          <div className="lg:col-span-1 space-y-3 sm:space-y-4 lg:space-y-6 order-2 lg:order-1">
             {/* Algorithm Selection */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-3 sm:p-4">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4">
                 {visualizationType === "sorting"
                   ? "Sorting Algorithm"
                   : "Tree Algorithm"}
@@ -356,7 +497,7 @@ export default function VisualizerPage() {
                       setSelectedTreeAlgorithm(e.target.value);
                     }
                   }}
-                  className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white appearance-none cursor-pointer"
+                  className="w-full p-2 sm:p-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white appearance-none cursor-pointer"
                 >
                   {(visualizationType === "sorting"
                     ? sortingAlgorithmsList
@@ -367,45 +508,45 @@ export default function VisualizerPage() {
                     </option>
                   ))}
                 </select>
-                <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                <ChevronDown className="absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400 pointer-events-none" />
               </div>
             </div>
 
             {/* Data Input */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-3 sm:p-4">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4">
                 Data Input
               </h3>
 
               {/* Custom Input */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <div className="mb-3 sm:mb-4">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Custom Values (comma-separated)
                 </label>
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <input
                     type="text"
                     value={customInput}
                     onChange={(e) => setCustomInput(e.target.value)}
                     placeholder="e.g., 64,34,25,12,22,11,90"
-                    className="flex-1 p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
+                    className="flex-1 p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-xs sm:text-sm"
                     onKeyPress={(e) => e.key === "Enter" && handleCustomInput()}
                   />
                   <button
                     onClick={handleCustomInput}
-                    className="px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium transition-colors"
+                    className="px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-xs sm:text-sm font-medium transition-colors whitespace-nowrap"
                   >
-                    Set
+                    Set Data
                   </button>
                 </div>
               </div>
 
               {/* Preset Datasets */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <div className="mb-3 sm:mb-4">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Preset Datasets
                 </label>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
                   {Object.keys(
                     visualizationType === "sorting"
                       ? defaultDatasets
@@ -414,7 +555,7 @@ export default function VisualizerPage() {
                     <button
                       key={key}
                       onClick={() => handlePresetSelect(key)}
-                      className="p-2 text-sm bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-colors capitalize"
+                      className="p-2 text-xs sm:text-sm bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-colors capitalize"
                     >
                       {key.replace(/([A-Z])/g, " $1").trim()}
                     </button>
@@ -425,28 +566,28 @@ export default function VisualizerPage() {
               {/* Random Data */}
               <button
                 onClick={generateRandomData}
-                className="w-full flex items-center justify-center gap-2 p-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium transition-colors"
+                className="w-full flex items-center justify-center gap-2 p-2 bg-green-500 hover:bg-green-600 text-white rounded-lg text-xs sm:text-sm font-medium transition-colors"
               >
-                <Shuffle className="w-4 h-4" />
+                <Shuffle className="w-3 h-3 sm:w-4 sm:h-4" />
                 Generate Random
               </button>
             </div>
 
             {/* Visualization Options */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-3 sm:p-4">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4">
                 Options
               </h3>
 
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 <label className="flex items-center">
                   <input
                     type="checkbox"
                     checked={showIndices}
                     onChange={(e) => setShowIndices(e.target.checked)}
-                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                   />
-                  <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                  <span className="ml-2 text-xs sm:text-sm text-gray-700 dark:text-gray-300">
                     Show Indices
                   </span>
                 </label>
@@ -456,28 +597,28 @@ export default function VisualizerPage() {
                     type="checkbox"
                     checked={showValues}
                     onChange={(e) => setShowValues(e.target.checked)}
-                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                   />
-                  <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                  <span className="ml-2 text-xs sm:text-sm text-gray-700 dark:text-gray-300">
                     Show Values
                   </span>
                 </label>
               </div>
             </div>
 
-            {/* Algorithm Info */}
+            {/* Algorithm Info - Collapsible on Mobile */}
             {currentAlgorithmInfo && (
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-3 sm:p-4">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4">
                   {currentAlgorithmInfo.name}
                 </h3>
 
-                <div className="space-y-3 text-sm">
+                <div className="space-y-2 sm:space-y-3 text-xs sm:text-sm">
                   <div>
                     <span className="font-medium text-gray-700 dark:text-gray-300">
                       Time Complexity:
                     </span>
-                    <div className="ml-2 text-gray-600 dark:text-gray-400">
+                    <div className="ml-2 text-gray-600 dark:text-gray-400 text-xs">
                       <div>
                         Best: {currentAlgorithmInfo.timeComplexity.best}
                       </div>
@@ -499,11 +640,11 @@ export default function VisualizerPage() {
                     </span>
                   </div>
 
-                  <div>
+                  <div className="hidden sm:block">
                     <span className="font-medium text-gray-700 dark:text-gray-300">
                       Description:
                     </span>
-                    <p className="mt-1 text-gray-600 dark:text-gray-400">
+                    <p className="mt-1 text-gray-600 dark:text-gray-400 text-xs">
                       {currentAlgorithmInfo.description}
                     </p>
                   </div>
@@ -511,8 +652,8 @@ export default function VisualizerPage() {
               </div>
             )}
 
-            {/* Legend - Moved to Left Panel */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            {/* Legend - Desktop Only */}
+            <div className="hidden lg:block bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
               <div className="p-4 border-b border-gray-200 dark:border-gray-700">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                   Legend

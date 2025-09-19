@@ -42,12 +42,40 @@ export const metadata: Metadata = {
     "algorithm tutorial",
     "programming education",
     "algorithm simulator",
+    "responsive algorithm visualizer",
+    "mobile-friendly algorithm tool",
+    "touch-friendly algorithm interface",
   ],
 
   // Authors and creator info
   authors: [{ name: "YubaNeupane" }],
   creator: "YubaNeupane",
   publisher: "YubaNeupane",
+
+  // Responsive design and mobile optimization
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 5,
+    userScalable: true,
+    viewportFit: "cover",
+  },
+
+  // Mobile app capabilities
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Algorithm Visualizer",
+  },
+
+  // Format detection
+  formatDetection: {
+    telephone: false,
+    date: false,
+    address: false,
+    email: false,
+  },
 
   // Open Graph meta tags
   openGraph: {
