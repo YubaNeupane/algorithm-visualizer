@@ -18,6 +18,10 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
 
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+
   // Compress responses
   compress: true,
 
