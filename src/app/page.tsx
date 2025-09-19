@@ -467,7 +467,7 @@ export default function LandingPage() {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
-                href="https://github.com/yourusername/algorithm-visualizer"
+                href="https://github.com/YubaNeupane/algorithm-visualizer"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors text-sm sm:text-base"
@@ -519,7 +519,7 @@ export default function LandingPage() {
                   About
                 </a>
                 <a
-                  href="https://github.com/yourusername/algorithm-visualizer"
+                  href="https://github.com/YubaNeupane/algorithm-visualizer"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block text-gray-400 hover:text-white transition-colors text-sm sm:text-base"
